@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+jar {
+	manifest {
+		attributes 	'Implementation-Title': 'Mojo Source Plugin BPMN',
+					'Implementation-Version': version
+	}
+}
+
+repositories {
+    jcenter()
+	mavenCentral()
+	flatDir {
+		dirs '../core/libs'
+	}
+}
+
+dependencies {
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+	compile 'org.apache.logging.log4j:log4j-core:2.7'
+	compile project(':core')
+	compile group: 'org.activiti.designer', name: 'org.activiti.designer.integration', version: '5.10.0'
+    testCompile 'junit:junit:4.12'
+}
+
+javadoc {
+	source = sourceSets.main.allJava
+	classpath = configurations.compile
+}
+
+task listJars {
+    doLast {
+        configurations.compile.each { File file -> println file.name }
+    }
+}
