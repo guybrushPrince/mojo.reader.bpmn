@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with mojo. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mojo.parser;
+package de.jena.uni.mojo.plugin.bpmn.parser;
 
 /**
  * A simple exception which can be thrown when there is a exception during the

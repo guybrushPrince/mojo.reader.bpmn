@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojo.parser;
+package de.jena.uni.mojo.plugin.bpmn.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +63,12 @@ import org.activiti.designer.bpmn2.model.TimerEventDefinition;
 import org.activiti.designer.bpmn2.model.UserTask;
 import org.activiti.designer.bpmn2.model.alfresco.AlfrescoMailTask;
 import org.activiti.designer.bpmn2.model.alfresco.AlfrescoScriptTask;
-import org.mojo.parser.bpmn.AssociationModel;
-import org.mojo.parser.bpmn.BoundaryEventModel;
-import org.mojo.parser.bpmn.Bpmn2MemoryModel;
-import org.mojo.parser.bpmn.FieldModel;
-import org.mojo.parser.bpmn.SequenceFlowModel;
+
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.AssociationModel;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.BoundaryEventModel;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.Bpmn2MemoryModel;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.FieldModel;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.SequenceFlowModel;
 
 /**
  * Shamelessly taken from the Activiti designer.
@@ -1070,7 +1071,7 @@ public class BpmnParser {
 						ACTIVITI_EXTENSIONS_NAMESPACE, "priority"));
 			} catch (final Exception e) {
 			}
-			userTask.setPriority(priorityValue);
+			userTask.setPriority(priorityValue + "");
 		}
 
 		boolean readyWithUserTask = false;

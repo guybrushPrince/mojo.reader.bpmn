@@ -16,15 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with mojo. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mojo.interpreter;
+package de.jena.uni.mojo.plugin.bpmn.interpreter;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.designer.bpmn2.model.FlowElement;
+import org.activiti.designer.bpmn2.model.SequenceFlow;
+
 import de.jena.uni.mojo.interpreter.AbstractEdge;
 import de.jena.uni.mojo.interpreter.IdInterpreter;
-import de.jena.uni.mojo.util.store.ElementStore;
+import de.jena.uni.mojo.plugin.bpmn.analysis.transform.FlowStore;
 
 /**
  * The flow element id interpreter is a specific IdInterpreter. It allows the
@@ -36,19 +39,19 @@ import de.jena.uni.mojo.util.store.ElementStore;
 public class FlowElementIdInterpreter extends IdInterpreter {
 
 	/**
-	 * An element store that contains the information about all elements within
+	 * A flow store that contains the information about all flows within
 	 * the process.
 	 */
-	private final ElementStore elementStore;
+	private final FlowStore flowStore;
 
 	/**
 	 * The constructor.
 	 * 
-	 * @param elementStore
-	 *            The element store of the process.
+	 * @param flowStore
+	 *            The flow store of the process.
 	 */
-	public FlowElementIdInterpreter(ElementStore elementStore) {
-		this.elementStore = elementStore;
+	public FlowElementIdInterpreter(FlowStore flowStore) {
+		this.flowStore = flowStore;
 	}
 
 	@Override
@@ -63,7 +66,7 @@ public class FlowElementIdInterpreter extends IdInterpreter {
 		String idString = "";
 		for (final Object node : nodes) {
 			FlowElement element = (FlowElement) node;
-			final Set<SequenceFlow> outgoingFlows = elementStore
+			final Set<SequenceFlow> outgoingFlows = flowStore
 					.getOutgoingFlows(element);
 
 			if (outgoingFlows == null) {
@@ -98,7 +101,7 @@ public class FlowElementIdInterpreter extends IdInterpreter {
 		String idString = "";
 		for (final AbstractEdge edge : edges) {
 			FlowElement element = (FlowElement) edge.source;
-			final Set<SequenceFlow> outgoingFlows = elementStore
+			final Set<SequenceFlow> outgoingFlows = flowStore
 					.getOutgoingFlows(element);
 
 			if (outgoingFlows == null) {

@@ -10,24 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojo.parser.bpmn;
+package de.jena.uni.mojo.plugin.bpmn.parser.bpmn;
 
-import org.activiti.designer.bpmn2.model.BoundaryEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.designer.bpmn2.model.ActivitiListener;
 import org.activiti.designer.bpmn2.model.Process;
+
+
 
 /**
  * Shamelessly taken from the Activiti designer.
  * 
  * @author Tijs Rademakers
  */
-public class BoundaryEventModel {
+public class SequenceFlowModel {
   
-  public static final String TIMEEVENT = "timeevent";
-  public static final String ERROREVENT = "errorevent";
-  public static final String SIGNALEVENT = "signalevent";
-  
-  public BoundaryEvent boundaryEvent;
-  public String attachedRef;
-  public String type;
+  public String id;
+  public String name;
+  public String sourceRef;
+  public String targetRef;
+  public String conditionExpression;
+  public List<ActivitiListener> listenerList = new ArrayList<ActivitiListener>();
   public Process parentProcess;
 }

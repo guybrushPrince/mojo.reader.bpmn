@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with mojo. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mojo.reader;
+package de.jena.uni.mojo.plugin.bpmn.reader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,15 +36,18 @@ import org.activiti.designer.bpmn2.model.FlowElement;
 import org.activiti.designer.bpmn2.model.FlowNode;
 import org.activiti.designer.bpmn2.model.Process;
 import org.activiti.designer.bpmn2.model.SequenceFlow;
-import org.mojo.analysis.information.AnalysisInformation;
-import org.mojo.analysis.transform.BpmnElementsTransformer;
-import org.mojo.error.Annotation;
-import org.mojo.error.ParseAnnotation;
-import org.mojo.parser.BpmnParser;
-import org.mojo.parser.bpmn.Bpmn2MemoryModel;
-import org.mojo.parser.bpmn.SequenceFlowModel;
-import org.mojo.util.store.ElementStore;
-import org.mojo.util.store.ErrorAndWarningStore;
+
+import de.jena.uni.mojo.analysis.information.AnalysisInformation;
+import de.jena.uni.mojo.error.Annotation;
+import de.jena.uni.mojo.error.ParseAnnotation;
+import de.jena.uni.mojo.plugin.bpmn.analysis.transform.BpmnElementsTransformer;
+import de.jena.uni.mojo.plugin.bpmn.analysis.transform.FlowStore;
+import de.jena.uni.mojo.plugin.bpmn.parser.BpmnParser;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.Bpmn2MemoryModel;
+import de.jena.uni.mojo.plugin.bpmn.parser.bpmn.SequenceFlowModel;
+import de.jena.uni.mojo.reader.Reader;
+import de.jena.uni.mojo.util.store.ElementStore;
+import de.jena.uni.mojo.util.store.ErrorAndWarningStore;
 
 /**
  * The BPMNReader is a simple own implementation of a BPMN parser. This
@@ -76,6 +79,11 @@ public class FullBPMNReader extends Reader {
 	 * The element store.
 	 */
 	private ElementStore elementStore;
+
+	/**
+	 * The flow store.
+	 */
+	private FlowStore flowStore;
 
 	/**
 	 * The error and warning store.
@@ -110,10 +118,11 @@ public class FullBPMNReader extends Reader {
 
 			// Define the element store.
 			this.elementStore = new ElementStore();
+			this.flowStore = new FlowStore();
 
 			// Transform the bpmn elements.
 			final BpmnElementsTransformer transformer = new BpmnElementsTransformer(
-					this.file.getAbsolutePath(), elementStore,
+					this.file.getAbsolutePath(), elementStore, flowStore,
 					model.getProcesses(), this.reporter);
 
 			// Add found annotations.
@@ -169,10 +178,20 @@ public class FullBPMNReader extends Reader {
 
 	/**
 	 * The element store.
+	 * 
 	 * @return The element store.
 	 */
 	public ElementStore getElementStore() {
 		return elementStore;
+	}
+
+	/**
+	 * Get the flow store.
+	 * 
+	 * @return The flow store.
+	 */
+	public FlowStore getFlowStore() {
+		return this.flowStore;
 	}
 
 	@Override

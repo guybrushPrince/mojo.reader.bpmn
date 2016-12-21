@@ -10,28 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojo.parser.bpmn;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.designer.bpmn2.model.ActivitiListener;
-import org.activiti.designer.bpmn2.model.Process;
-
-
+package de.jena.uni.mojo.plugin.bpmn.parser.bpmn;
 
 /**
  * Shamelessly taken from the Activiti designer.
  * 
  * @author Tijs Rademakers
  */
-public class SequenceFlowModel {
-  
-  public String id;
+public class FieldModel {
+
   public String name;
-  public String sourceRef;
-  public String targetRef;
-  public String conditionExpression;
-  public List<ActivitiListener> listenerList = new ArrayList<ActivitiListener>();
-  public Process parentProcess;
+  public String value;
 }

@@ -10,15 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mojo.parser.bpmn;
+package de.jena.uni.mojo.plugin.bpmn.parser.bpmn;
+
+import org.activiti.designer.bpmn2.model.BoundaryEvent;
+import org.activiti.designer.bpmn2.model.Process;
 
 /**
  * Shamelessly taken from the Activiti designer.
  * 
  * @author Tijs Rademakers
  */
-public class FieldModel {
-
-  public String name;
-  public String value;
+public class BoundaryEventModel {
+  
+  public static final String TIMEEVENT = "timeevent";
+  public static final String ERROREVENT = "errorevent";
+  public static final String SIGNALEVENT = "signalevent";
+  
+  public BoundaryEvent boundaryEvent;
+  public String attachedRef;
+  public String type;
+  public Process parentProcess;
 }
