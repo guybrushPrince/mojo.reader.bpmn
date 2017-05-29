@@ -111,7 +111,7 @@ public class BpmnElementsTransformer extends CoreAnalysis {
 
 		// Create a workflow graph on the base of it.
 		final WorkflowGraphCreator workflowGraphCreator = new WorkflowGraphCreator(
-				this.file, elementStore, startProcessMap, this.reporter);
+				this.processName, elementStore, startProcessMap, this.reporter);
 
 		// Add all annotations which will be created during the workflow
 		// graph creation.
