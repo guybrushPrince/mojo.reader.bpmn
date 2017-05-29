@@ -18,11 +18,9 @@
  */
 package de.jena.uni.mojo.plugin.bpmn.reader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,17 +60,31 @@ public class FullBPMNReader extends Reader {
 	 * The serial version UID.
 	 */
 	private static final long serialVersionUID = 3492046894715365053L;
+	
+	/**
+	 * An input stream of the file.
+	 */
+	private InputStream input;
 
 	/**
 	 * The constructor defines a new full bpmn reader.
 	 * 
-	 * @param file
-	 *            The file to read from.
+	 * @param processName
+	 * 			  The name of the process.
+	 * @param stream
+	 *            An xml string.
 	 * @param analysisInformation
 	 *            The analysis information.
+	 * @param encoding
+	 * 			  The encoding used in the stream.
 	 */
-	public FullBPMNReader(File file, AnalysisInformation analysisInformation) {
-		super(file, analysisInformation);
+	public FullBPMNReader(
+			String processName, 
+			String stream, 
+			AnalysisInformation analysisInformation, 
+			Charset encoding) {
+		super(processName, analysisInformation);
+		this.input = new ByteArrayInputStream(stream.getBytes(encoding));
 	}
 
 	/**
@@ -104,10 +116,7 @@ public class FullBPMNReader extends Reader {
 		try {
 			// Create a file input stream, which is used to define
 			// an xml stream.
-			FileInputStream fileStream = new FileInputStream(file);
-			final XMLInputFactory xif = XMLInputFactory.newInstance();
-			InputStreamReader in = new InputStreamReader(fileStream, "UTF-8");
-			XMLStreamReader xtr = xif.createXMLStreamReader(in);
+			XMLStreamReader xtr = XMLInputFactory.newInstance().createXMLStreamReader(input);
 
 			// Parse the bpmn file.
 			BpmnParser parser = new BpmnParser();
@@ -122,7 +131,7 @@ public class FullBPMNReader extends Reader {
 
 			// Transform the bpmn elements.
 			final BpmnElementsTransformer transformer = new BpmnElementsTransformer(
-					this.file.getAbsolutePath(), elementStore, flowStore,
+					this.processName, elementStore, flowStore,
 					model.getProcesses(), this.reporter);
 
 			// Add found annotations.
@@ -130,8 +139,7 @@ public class FullBPMNReader extends Reader {
 
 			this.graphs = transformer.getResult();
 
-		} catch (FileNotFoundException | UnsupportedEncodingException
-				| XMLStreamException e) {
+		} catch (XMLStreamException e) {
 			// Define a failure annotation..
 			ParseAnnotation annotation = new ParseAnnotation(this);
 			annotations.add(annotation);

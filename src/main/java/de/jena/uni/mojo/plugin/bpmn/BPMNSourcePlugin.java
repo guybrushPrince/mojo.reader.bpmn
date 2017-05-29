@@ -19,19 +19,16 @@
 package de.jena.uni.mojo.plugin.bpmn;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 
-import de.jena.uni.mojo.Mojo;
 import de.jena.uni.mojo.analysis.information.AnalysisInformation;
-import de.jena.uni.mojo.error.Annotation;
 import de.jena.uni.mojo.interpreter.IdInterpreter;
-import de.jena.uni.mojo.model.WorkflowGraph;
 import de.jena.uni.mojo.plugin.SourcePlugin;
 import de.jena.uni.mojo.plugin.bpmn.interpreter.FlowElementIdInterpreter;
 import de.jena.uni.mojo.plugin.bpmn.reader.FullBPMNReader;
 import de.jena.uni.mojo.reader.Reader;
-import de.jena.uni.mojo.verifier.Verifier;
 
 /**
  * 
@@ -44,7 +41,7 @@ public class BPMNSourcePlugin implements SourcePlugin {
 	 * A storage for a full bpmn reader.
 	 */
 	private FullBPMNReader reader;
-	
+
 	@Override
 	public String getName() {
 		return "Mojo Source Plugin BPMN";
@@ -61,86 +58,22 @@ public class BPMNSourcePlugin implements SourcePlugin {
 	}
 
 	@Override
-	public Reader getReader(File file, AnalysisInformation information) {
-		this.reader = new FullBPMNReader(file, information);
+	public Reader getReader(String processName, File file, AnalysisInformation information, Charset encoding)
+			throws IOException {
+		String stream = String.join("", Files.readAllLines(file.toPath(), encoding));
+		this.reader = new FullBPMNReader(processName, stream, information, encoding);
+		return reader;
+	}
+
+	@Override
+	public Reader getReader(String processName, String stream, AnalysisInformation information, Charset encoding) {
+		this.reader = new FullBPMNReader(processName, stream, information, encoding);
 		return reader;
 	}
 
 	@Override
 	public IdInterpreter getIdInterpreter() {
 		return new FlowElementIdInterpreter(reader.getFlowStore());
-	}
-
-	@Override
-	public List<Annotation> verify(File bpmn, AnalysisInformation info) {
-		// Create a list of errors.
-		List<Annotation> errors = new ArrayList<Annotation>();
-
-		if (bpmn.exists()) {
-			// Create a new BPMN reader.
-			FullBPMNReader reader = new FullBPMNReader(bpmn, info);
-
-			// Read in the graphs.
-			List<WorkflowGraph> graphs = null;
-
-			errors.addAll(reader.compute());
-			graphs = reader.getResult();
-
-			// If there are no graphs within the file
-			if (graphs == null)
-				return errors;
-
-			// Analyze each workflow graph.
-			for (WorkflowGraph g : graphs) {
-
-				// Create a new verifier.
-				Verifier verifier = new Verifier(g, Mojo.createMap(g, Mojo.findMax(g)),
-						info);
-
-				// Start the time measurement
-				info.startTimeMeasurement(g, "Verifier");
-
-				errors.addAll(verifier.compute());
-
-				// Stop the time measurement
-				info.endTimeMeasurement(g, "Verifier");
-			}
-		}
-
-		return errors;
-	}
-
-	@Override
-	public List<Annotation> verify(String bpmnXML, AnalysisInformation info) {
-		// Create a list to store the errors.
-		List<Annotation> errors = new ArrayList<Annotation>();
-
-		// Create a reader for the BPMN XML string.
-		FullBPMNReader reader = new FullBPMNReader(new File(bpmnXML), info);
-
-		// Build the workflow graphs.
-		errors.addAll(reader.compute());
-		List<WorkflowGraph> graphs = reader.getResult();
-
-		// Analyze each workflow graph.
-		if (graphs != null) {
-			for (WorkflowGraph g : graphs) {
-
-				// Create a new verifier.
-				Verifier verifier = new Verifier(g, Mojo.createMap(g, Mojo.findMax(g)),
-						info);
-
-				// Start the time measurement
-				info.startTimeMeasurement(g, "Verifier");
-
-				errors.addAll(verifier.compute());
-
-				// Stop the time measurement
-				info.endTimeMeasurement(g, "Verifier");
-			}
-		}
-
-		return errors;
 	}
 
 }
