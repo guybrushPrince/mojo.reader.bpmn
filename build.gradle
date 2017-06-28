@@ -11,6 +11,16 @@ jar {
 	}
 }
 
+task fatJar(type: Jar) {
+	manifest {
+		attributes 	'Implementation-Title': 'Mojo Source Plugin BPMN',
+					'Implementation-Version': version
+	}
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 repositories {
     jcenter()
 	mavenCentral()
