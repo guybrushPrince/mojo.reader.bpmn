@@ -27,12 +27,13 @@ repositories {
 	maven {
 		url "https://maven.alfresco.com/nexus/content/repositories/activiti/"
 	}
+	maven { url "https://jitpack.io" }
 }
 
 dependencies {
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
 	compile 'org.apache.logging.log4j:log4j-core:2.7'
-	compile project(':core')
+	compile 'com.github.guybrushPrince:mojo.core:master'
 	compile group: 'org.activiti.designer', name: 'org.activiti.designer.model', version: '5.10.0'
     testCompile 'junit:junit:4.12'
 	testCompile group: 'org.activiti.designer', name: 'org.activiti.designer.model', version: '5.10.0'

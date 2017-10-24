@@ -1,4 +1,1 @@
-include ':core'
-project(':core').projectDir = new File(settingsDir, '../core')
-
 rootProject.name = 'mojo.reader.bpmn'
