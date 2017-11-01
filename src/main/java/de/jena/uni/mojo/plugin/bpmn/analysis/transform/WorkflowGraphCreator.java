@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.designer.bpmn2.model.EventGateway;
 import org.activiti.designer.bpmn2.model.ExclusiveGateway;
 import org.activiti.designer.bpmn2.model.FlowElement;
 import org.activiti.designer.bpmn2.model.InclusiveGateway;
@@ -170,7 +171,7 @@ class WorkflowGraphCreator extends CoreAnalysis {
 			annotation.addInvolvedNodes(components.get(0));
 			annotations.add(annotation);
 		}
-
+		
 		// Construct a final list of workflow graphs.
 		final List<WorkflowGraph> graphs = new ArrayList<>(components.size());
 
@@ -194,7 +195,7 @@ class WorkflowGraphCreator extends CoreAnalysis {
 			// Combine start and end nodes.
 			if (combineStartNodes()) {
 				if (combineEndNodes()) {
-					graphs.add(latestGraph);
+					graphs.add(latestGraph);					
 				}
 			}
 		}
@@ -474,23 +475,19 @@ class WorkflowGraphCreator extends CoreAnalysis {
 		} else if (flowElement instanceof InclusiveGateway) {
 			joinType = Type.OR_JOIN;
 			splitType = Type.OR_FORK;
+		} else if (flowElement instanceof EventGateway) {
+			joinType = Type.OR_JOIN;
+			splitType = Type.SPLIT;
 		} else {
 			// The element is not supported. Annotate it on the process.
 			UnsupportedElementAnnotation annotation = new UnsupportedElementAnnotation(
 					this);
-
+			
 			annotation.addPrintableNode(node);
 			annotations.add(annotation);
-
-			// clear relationships with other nodes
-			for (final WGNode wgNode : predecessors) {
-				wgNode.removeSuccessor(node);
-			}
-			for (final WGNode wgNode : successors) {
-				wgNode.removePredecessor(node);
-			}
-			node.clearPredecessors();
-			node.clearSuccessors();
+			
+			joinType = Type.OR_JOIN;
+			splitType = Type.OR_FORK;
 			return;
 		}
 
