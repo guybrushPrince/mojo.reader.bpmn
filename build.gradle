@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 sourceCompatibility = 1.7
-version = '1.0'
+version = '1.1'
 
 jar {
 	manifest {
@@ -11,14 +11,10 @@ jar {
 	}
 }
 
-task fatJar(type: Jar) {
-	manifest {
-		attributes 	'Implementation-Title': 'Mojo Source Plugin BPMN',
-					'Implementation-Version': version
-	}
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+configurations {
+	mojo
+	compile.extendsFrom mojo
+	runtime.extendsFrom mojo
 }
 
 repositories {
@@ -32,9 +28,12 @@ repositories {
 
 dependencies {
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+	runtime group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
 	compile 'org.apache.logging.log4j:log4j-core:2.7'
-	compile 'com.github.guybrushPrince:mojo.core:master'
+	runtime 'org.apache.logging.log4j:log4j-core:2.7'
+	mojo 'com.github.guybrushPrince:mojo.core:master'
 	compile group: 'org.activiti.designer', name: 'org.activiti.designer.model', version: '5.10.0'
+	runtime group: 'org.activiti.designer', name: 'org.activiti.designer.model', version: '5.10.0'
     testCompile 'junit:junit:4.12'
 	testCompile group: 'org.activiti.designer', name: 'org.activiti.designer.model', version: '5.10.0'
 }
@@ -48,4 +47,15 @@ task listJars {
     doLast {
         configurations.compile.each { File file -> println file.name }
     }
+}
+
+task fatJar(type: Jar) {
+	manifest {
+		attributes 	'Implementation-Title': 'Mojo Source Plugin BPMN',
+					'Implementation-Version': version
+	}
+    baseName = project.name + '-all'
+    dependsOn configurations.runtime
+    from { (configurations.runtime - configurations.mojo).collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

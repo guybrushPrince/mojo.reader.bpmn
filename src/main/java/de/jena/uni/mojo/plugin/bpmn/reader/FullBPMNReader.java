@@ -176,7 +176,7 @@ public class FullBPMNReader extends Reader {
 				FlowNode source = map.get(s.sourceRef);
 				FlowNode target = map.get(s.targetRef);
 				SequenceFlow flow = new SequenceFlow();
-				flow.setId("sf" + (counter++));
+				flow.setId((s.id != "" && s.id != null ? s.id : "sf" + counter++));
 				flow.setSourceRef(source);
 				flow.setTargetRef(target);
 				p.getFlowElements().add(flow);
