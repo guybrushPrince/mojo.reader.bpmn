@@ -54,7 +54,7 @@ public class BPMNSourcePlugin implements SourcePlugin {
 
 	@Override
 	public String getFileExtension() {
-		return "bpmn.xml";
+		return "bpmn";
 	}
 
 	@Override
