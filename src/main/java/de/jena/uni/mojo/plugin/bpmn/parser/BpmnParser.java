@@ -505,7 +505,7 @@ public class BpmnParser {
 									currentArtifact);
 
 						} else {
-							activeProcess.getArtifacts().add(currentArtifact);
+							if (activeProcess != null) activeProcess.getArtifacts().add(currentArtifact);
 						}
 					}
 
@@ -547,8 +547,10 @@ public class BpmnParser {
 									.get(activeSubProcessList.size() - 1)
 									.getFlowElements().add(currentActivity);
 						} else {
-							activeProcess.getFlowElements()
-									.add(currentActivity);
+							if (activeProcess != null) {
+								activeProcess.getFlowElements()
+										.add(currentActivity);
+							}
 						}
 					}
 				}
@@ -1148,7 +1150,7 @@ public class BpmnParser {
 					userTask.getTaskListeners().add(listener);
 
 				} else if (xtr.isStartElement()
-						&& "field".equalsIgnoreCase(xtr.getLocalName())) {
+						&& "field".equalsIgnoreCase(xtr.getLocalName()) && listener != null) {
 					listener.getFieldExtensions().add(parseFieldExtension(xtr));
 
 				} else if (xtr.isStartElement()
@@ -1304,7 +1306,7 @@ public class BpmnParser {
 						&& "documentation".equalsIgnoreCase(xtr.getLocalName())) {
 					/** @author Norbert Spiess load documentation */
 					final String docText = xtr.getElementText();
-					if (isEmpty(docText) == false) {
+					if (isEmpty(docText) == false && task != null) {
 						task.setDocumentation(docText);
 					}
 				} else if (xtr.isEndElement()
@@ -1824,7 +1826,7 @@ public class BpmnParser {
 					listenerList.add(listener);
 
 				} else if (xtr.isStartElement()
-						&& "field".equalsIgnoreCase(xtr.getLocalName())) {
+						&& "field".equalsIgnoreCase(xtr.getLocalName()) && listener != null) {
 					listener.getFieldExtensions().add(parseFieldExtension(xtr));
 				} else if (xtr.isStartElement()
 						&& "potentialStarter".equalsIgnoreCase(xtr

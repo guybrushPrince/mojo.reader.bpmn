@@ -21,7 +21,7 @@ repositories {
     jcenter()
 	mavenCentral()
 	maven {
-		url "https://maven.alfresco.com/nexus/content/repositories/activiti/"
+		url "https://maven.alfresco.com/nexus/content/repositories/activiti-releases/"
 	}
 	maven { url "https://jitpack.io" }
 }
